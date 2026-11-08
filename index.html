@@ -370,15 +370,13 @@ body.scrolling .glass,body.scrolling .cta-panel{background:linear-gradient(160de
   }
   var started = false;
   var timer = setTimeout(function(){ if (!started) { started = true; go(); } }, 15000); /* 兜底：图卡住 15 秒也开 */
-  document.addEventListener("DOMContentLoaded", function(){
+  (function waitForImg(){
     var img = document.getElementById("koi2d");
-    if (!img) return;
-    if (img.complete) { if (!started) { started = true; clearTimeout(timer); go(); } }
-    else {
-      img.addEventListener("load", function(){ if (!started) { started = true; clearTimeout(timer); go(); } });
-      img.addEventListener("error", function(){ if (!started) { started = true; clearTimeout(timer); go(); } });
-    }
-  });
+    if (!img) { setTimeout(waitForImg, 60); return; }
+    if (img.complete) { if (!started) { started = true; clearTimeout(timer); go(); } return; }
+    img.addEventListener("load", function(){ if (!started) { started = true; clearTimeout(timer); go(); } });
+    img.addEventListener("error", function(){ if (!started) { started = true; clearTimeout(timer); go(); } });
+  })();
 })();
 </script>
 </head>
