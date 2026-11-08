@@ -1499,6 +1499,9 @@ window.__startPondVideo = startPondVideo; /* 加载门放行后由 gate 逻辑�
 function onKoiLoaded(){
   if (koiReadyHandled) return;
   koiReadyHandled = true;
+  // 先置位放行信号（不依赖 rAF：后台标签页 rAF 会被节流，卡住会导致门永不自动放行）
+  window.__koiReady = true;
+  if (window.__gateCheck) window.__gateCheck(); /* 通知加载门：3D 鱼已就位 */
   // 减少动态偏好下 3D 鱼不渲染，2D 占位常驻
   if (reducedMotion) return;
   // 等 3D 鱼真正渲染出第一帧，再让 2D 占位淡出，无缝交接
@@ -1507,8 +1510,6 @@ function onKoiLoaded(){
       canvas.classList.add("on");
       if (koi2d) koi2d.classList.add("gone");
       setTimeout(function(){ if (koi2d && koi2d.parentNode) koi2d.parentNode.removeChild(koi2d); }, 800);
-      window.__koiReady = true;
-      if (window.__gateCheck) window.__gateCheck(); /* 通知加载门：3D 鱼已就位 */
     });
   });
 }
